@@ -3,6 +3,9 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {},
+    backgroundImage: {
+      'drum-kit': "url('../public/images/background.jpg')",
+    },
   },
   plugins: [],
 };

@@ -1,8 +1,10 @@
+import { DrumKit } from './projects/001-Drum-Kit/drum-kit';
+
 function App() {
   return (
-    <div>
-      <h1>Hello</h1>
-    </div>
+    <>
+      <DrumKit />
+    </>
   );
 }
 
