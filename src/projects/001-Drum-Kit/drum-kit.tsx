@@ -14,23 +14,22 @@ const data = [
 ];
 
 export function DrumKit() {
-  const audioRefs = useRef<Map<number, HTMLAudioElement>>(new Map());
+  const refContainer = useRef<HTMLDivElement>(null);
 
   const [activeKey, setActiveKey] = useState('');
 
   const handleKeyDown = (e: KeyboardEvent) => {
     setActiveKey(e.key.toUpperCase());
+    if (!refContainer.current) return;
 
-    const idOfPressAudio = data.find(
-      (item) => item.key === e.key.toUpperCase()
-    );
+    const audio = refContainer.current.querySelector(
+      `[data-id="${e.key.toUpperCase()}"]`
+    ) as HTMLAudioElement;
 
-    if (idOfPressAudio?.id !== undefined) {
-      const audio = audioRefs.current.get(idOfPressAudio.id);
-      if (!audio) return;
-      audio.currentTime = 0;
-      audio.play();
-    }
+    if (!audio) return;
+
+    audio.currentTime = 0;
+    audio.play();
   };
 
   const handleKeyUp = (e: KeyboardEvent) => {
@@ -48,7 +47,10 @@ export function DrumKit() {
   }, []);
 
   return (
-    <div className='bg-drum-kit bg-center bg-no-repeat bg-cover min-h-screen flex items-center justify-center '>
+    <div
+      ref={refContainer}
+      className='bg-drum-kit bg-center bg-no-repeat bg-cover min-h-screen flex items-center justify-center '
+    >
       <ul className='flex gap-4'>
         {data.map((element) => (
           <li
@@ -64,14 +66,7 @@ export function DrumKit() {
         ))}
       </ul>
       {data.map((audio, i) => (
-        <audio
-          key={audio.id}
-          ref={(node) => {
-            const currentRef = audioRefs.current;
-            if (!currentRef || !node) return;
-            currentRef.set(i, node);
-          }}
-        >
+        <audio key={audio.id} data-id={audio.key}>
           <source
             src={`/sounds/${audio.label.toLowerCase()}.wav`}
             type='audio/wav'
