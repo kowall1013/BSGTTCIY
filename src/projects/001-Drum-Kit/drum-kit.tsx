@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from 'utils/cn';
 
 const data = [
@@ -13,13 +13,24 @@ const data = [
   { id: 8, key: 'L', label: 'TINK' },
 ];
 
-//Think how can I play audio without controls
-
 export function DrumKit() {
+  const audioRefs = useRef<Map<number, HTMLAudioElement>>(new Map());
+
   const [activeKey, setActiveKey] = useState('');
 
   const handleKeyDown = (e: KeyboardEvent) => {
     setActiveKey(e.key.toUpperCase());
+
+    const idOfPressAudio = data.find(
+      (item) => item.key === e.key.toUpperCase()
+    );
+
+    if (idOfPressAudio?.id !== undefined) {
+      const audio = audioRefs.current.get(idOfPressAudio.id);
+      if (!audio) return;
+      audio.currentTime = 0;
+      audio.play();
+    }
   };
 
   const handleKeyUp = (e: KeyboardEvent) => {
@@ -52,11 +63,21 @@ export function DrumKit() {
           </li>
         ))}
       </ul>
-
-      <audio id='boom'>
-        <source src='/sounds/boom.wav' type='audio/wav' />
-        Your browser does not support the audio element.
-      </audio>
+      {data.map((audio, i) => (
+        <audio
+          key={audio.id}
+          ref={(node) => {
+            const currentRef = audioRefs.current;
+            if (!currentRef || !node) return;
+            currentRef.set(i, node);
+          }}
+        >
+          <source
+            src={`/sounds/${audio.label.toLowerCase()}.wav`}
+            type='audio/wav'
+          />
+        </audio>
+      ))}
     </div>
   );
 }
