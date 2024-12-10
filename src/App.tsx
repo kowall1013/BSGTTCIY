@@ -1,12 +1,7 @@
-import { DrumKit } from './projects/001-Drum-Kit/drum-kit';
-import { Clock } from 'projects/002-Clock/clock';
+import { Snake } from './projects/003-snake/Snake';
 
 function App() {
-  return (
-    <>
-      <Clock />
-    </>
-  );
+  return <Snake />;
 }
 
 export default App;
